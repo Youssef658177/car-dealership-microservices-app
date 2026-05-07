@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Evaluation</title>
+</head>
+<body>
+    <h1>Microservices Project - Car Evaluation</h1>
+    
+    <label>Select Product:</label>
+    <select id="prodDrop" onchange="fetchPrices()">
+        <option value="">-- Select --</option>
+    </select>
+
+    <div id="results" style="margin-top:20px;"></div>
+
+    <script>
+        // هذه الروابط هي المطلوبة في Task 4
+        const PROD_URL = "https://product-service.xxxxxx.codeengine.appdomain.cloud/products";
+        const PRICE_URL = "https://pricing-service.xxxxxx.codeengine.appdomain.cloud/dealer_pricing";
+
+        async function init() {
+            const res = await fetch(PROD_URL);
+            const data = await res.json();
+            const drop = document.getElementById('prodDrop');
+            for (let id in data) {
+                let opt = document.createElement('option');
+                opt.value = id;
+                opt.text = data[id].name;
+                drop.add(opt);
+            }
+        }
+
+        async function fetchPrices() {
+            const id = document.getElementById('prodDrop').value;
+            if(!id) return;
+            const res = await fetch(`${PRICE_URL}/${id}`);
+            const data = await res.json();
+            document.getElementById('results').innerHTML = "<h3>Prices:</h3>" + JSON.stringify(data);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
